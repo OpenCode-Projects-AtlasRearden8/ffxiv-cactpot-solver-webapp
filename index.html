@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mini Cactpot Solver - Asdale Dynamics</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header>
+    <h1>Mini Cactpot Solver</h1>
+    <p class="tagline">Expected-value picks for FFXIV's Mini Cactpot. Local-first, works offline.</p>
+    <nav>
+      <button id="tab-solver" class="tab active" type="button">Solver</button>
+      <button id="tab-drill" class="tab" type="button">Practice drill</button>
+    </nav>
+  </header>
+
+  <main>
+    <section id="solver-view" class="view">
+      <div class="card">
+        <h2>1. Enter your ticket</h2>
+        <p>Click a square to cycle it: <strong>? &rarr; 1 &rarr; 2 &rarr; &hellip; &rarr; 9 &rarr; ?</strong>.
+        Set each number you have scratched off; leave squares you have not revealed as <strong>?</strong>.</p>
+        <div id="solver-grid" class="grid" aria-label="Cactpot ticket, 3 by 3"></div>
+        <div class="row">
+          <button id="solver-clear" type="button">Clear</button>
+          <button id="solver-sample" type="button">Load example</button>
+        </div>
+        <p id="solver-error" class="error" hidden></p>
+      </div>
+
+      <div class="card">
+        <h2>2. Best line</h2>
+        <p id="solver-summary">Set a few numbers to see expected values.</p>
+        <table id="solver-table">
+          <thead>
+            <tr><th>Line</th><th>Expected payout (MGP)</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+        <p id="solver-scratch"></p>
+      </div>
+    </section>
+
+    <section id="drill-view" class="view" hidden>
+      <div class="card">
+        <h2>Practice drill</h2>
+        <p>A fresh random ticket, everything face-down. Scratch up to <strong>3</strong> squares,
+        then pick one of the 8 lines. You score an <em>optimal</em> when your line pays as much as
+        the best line on the true ticket.</p>
+        <div class="row">
+          <button id="drill-new" type="button">New drill</button>
+          <button id="drill-hint" type="button" disabled>Hint (solver)</button>
+        </div>
+        <div id="drill-grid" class="grid" aria-label="Practice ticket, 3 by 3"></div>
+        <p id="drill-status">No drill running.</p>
+        <h3>Pick a line</h3>
+        <div id="drill-lines" class="line-picker"></div>
+        <table id="drill-table" hidden>
+          <thead>
+            <tr><th>Line</th><th>Sum</th><th>Payout (MGP)</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <h2>Streaks</h2>
+        <div class="row">
+          <p>Current streak: <strong id="streak-now">0</strong></p>
+          <p>Best streak: <strong id="streak-best">0</strong></p>
+        </div>
+        <p>Optimal picks: <span id="streak-optimal">0</span> of <span id="streak-games">0</span> drills
+        (<span id="streak-rate">0%</span>)</p>
+        <table id="streak-history">
+          <thead>
+            <tr><th>When</th><th>Scratches</th><th>Your payout</th><th>Best payout</th><th>Result</th></tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+        <div class="row">
+          <button id="streak-reset" type="button">Reset streak log</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2>Scratch sirloin odds</h2>
+      <p>The "sirloin" is the big-ticket cut: a line of <strong>7&thinsp;8&thinsp;9</strong>, sum 24,
+      paying <strong>10,800 MGP</strong>. Reference odds on a fair random ticket:</p>
+      <ul>
+        <li>One blind line hits the 10,800 sirloin <strong>1 time in 84</strong> (&asymp;1.2%).</li>
+        <li>Some line on the ticket hits it <strong>9.52%</strong> of the time (1 in 10.5 tickets).</li>
+        <li>A blind line pays 10,080 from {1&thinsp;2&thinsp;3} or {6&thinsp;8&thinsp;9}, also
+        <strong>1 in 84</strong> each.</li>
+        <li>About <strong>27.1%</strong> of tickets contain a premium line (10,080 or 10,800 top
+        payout); on those tickets the expected-value-best line averages <strong>&asymp;3,665 MGP</strong>,
+        versus <strong>&asymp;813 MGP</strong> for a flat blind pick &mdash; that gap is the whole game.</li>
+        <li>Plenty of fat without the sirloin: a 1,080 line (sum 15) shows up on
+        <strong>53.5%</strong> of tickets, and a 1,620 line (sum 19) on <strong>37.9%</strong>.</li>
+        <li>The thin gruel: a sum-20 row pays just <strong>36 MGP</strong> &mdash; the worst cut.</li>
+      </ul>
+      <p class="fineprint">Exact counts brute-forced over all 362,880 arrangements of 1&ndash;9;
+      see README for the full pay table.</p>
+    </section>
+
+    <footer>
+      <p>Built by and for the community. Credited to <strong>Asdale Dynamics, LLC</strong>.
+      MIT licensed; no accounts, no network, no data leaves your browser.</p>
+    </footer>
+  </main>
+
+  <script src="js/solver.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/drill.js"></script>
+</body>
+</html>
